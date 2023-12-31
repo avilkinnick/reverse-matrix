@@ -5,7 +5,10 @@ project(reverse-matrix LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(reverse-matrix main.cpp)
+add_executable(reverse-matrix main.cpp
+    SquareMatrix.h
+    global.h
+)
 
 include(GNUInstallDirs)
 install(TARGETS reverse-matrix

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <random>
 
+#include "SquareMatrix.h"
+
 bool is_zero(double a);
 
 // Создать динамическую квадратную матрицу
@@ -50,50 +52,17 @@ int main()
 {
     srand(time(nullptr));
 
-    constexpr int n = 3;
+    constexpr std::size_t n = 500;
 
-    auto** matrix = create_square_matrix<double>(n);
-    randomize_square_matrix(matrix, n, -9, 9);
+    auto matrix = SquareMatrix<double, n>();
+    matrix.randomize(-9, 9);
+    matrix.print();
 
-    std::cout << "Matrix A:\n";
-    print_square_matrix(matrix, n);
+    auto inverse_matrix = SquareMatrix<double, n>::inverse_matrix(matrix);
+    inverse_matrix.print();
 
-    auto determinant = calculate_determinant(matrix, n);
-    std::cout << "Determinant = " << determinant << "\n\n";
-
-    if (is_zero(determinant))
-    {
-        std::cout << "There is no invertible matrix for this matrix";
-    }
-    else
-    {
-        auto** cofactor_matrix = create_cofactor_matrix(matrix, n);
-
-        std::cout << "Matrix A*:\n";
-        print_square_matrix(cofactor_matrix, n);
-
-        auto** adjugate_matrix = create_adjugate_matrix(cofactor_matrix, n);
-
-        std::cout << "Matrix A^T:\n";
-        print_square_matrix(adjugate_matrix, n);
-
-        auto** invertible_matrix = multiplication_of_square_matrix_by_scalar(adjugate_matrix, n, 1.0 / determinant);
-
-        std::cout << "Matrix A^-1:\n";
-        print_square_matrix(invertible_matrix, n);
-
-        auto** identity_matrix = multiplication_of_square_matrixes(matrix, invertible_matrix, n);
-
-        std::cout << "Identity matrix:\n";
-        print_square_matrix(identity_matrix, n);
-
-        delete_square_matrix(identity_matrix, n);
-        delete_square_matrix(invertible_matrix, n);
-        delete_square_matrix(adjugate_matrix, n);
-        delete_square_matrix(cofactor_matrix, n);
-    }
-
-    delete_square_matrix(matrix, n);
+    auto identity_matrix = matrix * inverse_matrix;
+    identity_matrix.print();
 }
 
 bool is_zero(double a)
